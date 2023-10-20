@@ -1,0 +1,100 @@
+package com.springboot.myfirstwebapp.login;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes("name") // model attribute that needs to be used
+// in other controllers have to be put here in SessionAttributes
+public class loginController {
+
+    @Autowired
+    private AuthenticateService authenticateService;
+    // here we have a jsp page as login page and we are retrieving that info from
+    // there
+    // @RequestMapping("/login") //if this url is called then we return the login jsp page.
+    // public String loginPage() {
+    // return "login";
+    // }
+
+    /*
+     * --------------------------------------------------------
+     * This method was used to get data from URL, localhost::8080/login?name=tarun
+     * like this we can give data using URL and that variable name and type must
+     * match with the name/type of argument used, ModeMap obj is used to map attribute
+     * data to a name that can be called in JSP file. Data in JSP file can be called
+     * using $sign
+     * ----------------------------------------------------------------
+     * 
+     * @RequestMapping("/login")
+     * // how to tell controller that url has some data in it
+     * // localhost::8080/login?name=Tarun
+     * public String goToLoginPage(@RequestParam String name, ModelMap model) {
+     * model.put("att_name", name); // this model method is used to pass in the
+     * paramerter to our JSP
+     * // Infact passing anything to our JSP we use ModelMap
+     * System.out.println("Request Parameter  is ->" + name); // -> Not recommended
+     * for prod code
+     * return "login";
+     * }
+     */
+
+    /*
+     * --------------------------------------------------------
+     * Here we are trying to make a form page, we will see how this
+     * the data is submit to webpage and Get method make the data
+     * available in the URl and Post method dosnt .
+     */
+
+    // when request is to login page and request method is GET then use
+    // following function
+    @RequestMapping(value = "login", method = RequestMethod.GET)
+    public String toLoginPage() {
+        return "login";
+    }
+
+    /*
+     * when request is to login page i.e. url is login and request method is POST
+     * use this method which is returning Welcome.jsp
+     * 
+     * post-form submit button calls its own url, that is you are calling the same
+     * method again and this time since its taking inputs it will be calling the
+     * POST method so basically you are calling a url like ->
+     * "localhost::8080/login?name=Tarun,password=password" but since its post
+     * method this detail wont be visible
+     */
+
+    @RequestMapping(value = "login", method = RequestMethod.POST)
+    // to get the data from the form use ModelMap
+    public String toWelcomePage(@RequestParam String name, @RequestParam String password, ModelMap model) {
+
+        if (authenticateService.authenticate(name, password)) {
+            model.put("name", name);
+            model.put("password", password);
+
+            // Authentication
+            // we can create a condition here like password = "asds" -> continue
+            // else dont show welcome page show something else.
+            // but we do it using a class thats better way. we have made that in if
+            // condition
+            return "Welcome";
+            // this method is returing to jsp page Welcome.jsp, and the model intialised
+            // here this Model will be available with the Welcome page and since session is used
+            // it will be available with the other pages as well who have used those session names
+        } else {
+            // if authenication failed then we would like to pass a message
+            // that will show in login page, so that means we want to pass something
+            // from the controller (class) to the view so we use a model.
+            model.put("error", "Invalid Username or Password, Try Again");
+            // we declared another model using the name "error" that can be used in the
+            // login.jsp page
+            return "login";
+        }
+    }
+
+}

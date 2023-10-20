@@ -1,0 +1,32 @@
+## Request vs Model vs Session
+
+Understanding Lifetime of values setting to Request/Model/Session
+
+Request -> Only avaiable while performing that request only. Like if you go to some other page from there then request data will be lost. Not available for future requests.
+
+Model -> when you go to next page value of model wont be avialable, thats because its only available to that requests sccope.
+
+Sessions-> when you want to make the data avaialbe at other places too ( places means like to other controllers so that they can use those models in their jsp pages.)
+    Then you use @SessionAttributes("name",....)
+    Takes more memory so be carefull.
+    
+Here is the path for CSS and BOOTSTRAP because i am unbale to copy from directory that is given in JAVA PROJECT ROW in the left panel:
+    CSS: /META-INF/resources/webjars/bootstrap/5.1.3/css/bootstrap.min.css
+    JS: META-INF/resources/webjars/bootstrap/5.1.3/js/bootstrap.min.js
+    JQUERY: META-INF/resources/webjars/jquery/3.6.0/jquery.min.js
+
+*************************************************
+There is a concept of binding form with the class or say binding jsp with form, because as to take information from a form we need to add @RequestParam with every attribute we have and then we get value from the form to the controller and model.
+
+There is another way called Command Bean or Form Packing Object.
+# modelAttribute - model binging with the bean
+
+for that add dependency :- web-validation -> "spring-boot-starter-validation"
+Here we map the JSP form to the controller class bean using 
+@RequestMapping(value = "add-todo", method = RequestMethod.POST)
+public String addNewTodo(ModelMap model, Todo todo) {
+    now this todo object has its parameters intiailised with values in the jsp form itself and we can use it.
+--------------------------------------------------------
+# adding validation to the form and bean 
+because at the end we are validating what values can the properties of the bean/class can have
+
